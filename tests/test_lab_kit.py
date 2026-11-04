@@ -42,3 +42,12 @@ def test_fr3_spare_joint_moves_the_elbow_but_not_the_hand():
     r = fmr6.Robot("table", arm="fr3")
     _, drift, elbow = fmr6.spare_joint_sweep(r, target=[0.62, -0.10, 0.45])
     assert drift < 1e-4 and elbow > 0.15
+
+
+def test_l1_one_joint_moves_the_hand_a_long_way():
+    r = fmr6.Robot("table", arm="fr3")
+    q = r.ready.copy(); p0 = r.tcp(q)[0]
+    q[0] += np.radians(40); p1 = r.tcp(q)[0]
+    q[3] += np.radians(35); p2 = r.tcp(q)[0]
+    assert abs(np.linalg.norm(p1 - p0) - 0.38) < 0.005                # "swings it 38 cm to the side"
+    assert 0.28 < p2[2] - p1[2] < 0.30                                  # "lifts it nearly 30 cm"
