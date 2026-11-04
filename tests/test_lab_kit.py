@@ -36,3 +36,9 @@ def test_user_compiled_model_is_accepted():
     b.add_geom(type=mujoco.mjtGeom.mjGEOM_BOX, size=[0.025] * 3, mass=0.1)
     r = fmr6.Robot(arm="fr3", model=spec.compile())
     assert r.model.body("block").id > 0 and len(r.joints) == 7
+
+
+def test_fr3_spare_joint_moves_the_elbow_but_not_the_hand():
+    r = fmr6.Robot("table", arm="fr3")
+    _, drift, elbow = fmr6.spare_joint_sweep(r, target=[0.62, -0.10, 0.45])
+    assert drift < 1e-4 and elbow > 0.15

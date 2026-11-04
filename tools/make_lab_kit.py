@@ -75,6 +75,13 @@ for arm in ("fr3", "fmr6"):
     r = fmr6.Robot("table", arm=arm)
     pics.append(r.render(400, 300, camera={WIDE}))
 media.show_images(pics, titles=["Franka FR3 (7 joints)", "FMR-6 (6 joints)"])"""),
+    ("md", """### The spare joint (a preview)
+
+Hold the hand still over the table and the FR3 can still swing its elbow. Don't worry about how the cell works yet: A3 explains the Jacobian and Season 2 uses this freedom. Just watch the hand stay put."""),
+    ("code", f"""spare_joint_sweep = fmr6.spare_joint_sweep          # 30 lines in fmr6/demos.py, read it after A3
+frames, hand_err, elbow_travel = spare_joint_sweep(robot, target=[0.62, -0.10, 0.45], camera={WIDE})
+print(f"elbow moved {{elbow_travel * 100:.0f}} cm, hand moved {{hand_err * 1000:.4f}} mm")
+show_video(frames, fps=30)"""),
     ("md", """## 6 · A short animation
 
 A video is a list of images. Sweep joint 1 back and forth and render a frame each time."""),
