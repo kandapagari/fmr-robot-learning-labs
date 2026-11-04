@@ -1,10 +1,10 @@
 [project]
 name = "fmr-robot-learning-labs"
-version = "0.1.0"
+version = "0.2.0"
 description = "Hands-on labs for the Foundation Models for Robotics video series: the FMR-6 arm in MuJoCo, one lab per lesson."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT (code), CC BY 4.0 (FMR-6 model)" }
+license = { text = "MIT (code), CC BY 4.0 (FMR-6 model), Apache-2.0 (Franka FR3 model)" }
 dependencies = [
   "mujoco>=3.2",
   "numpy>=1.26",
@@ -25,7 +25,7 @@ build-backend = "setuptools.build_meta"
 packages = ["fmr6"]
 
 [tool.setuptools.package-data]
-fmr6 = ["assets/*.xml"]
+fmr6 = ["assets/*.xml", "assets/fr3/*.xml", "assets/fr3/LICENSE", "assets/fr3/meshes/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

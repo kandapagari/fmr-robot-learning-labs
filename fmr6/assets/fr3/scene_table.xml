@@ -1,0 +1,38 @@
+<!-- Franka FR3 at the same table, cup and sponge as the FMR-6 scene, so lab code can use the same world points. -->
+<mujoco model="fr3_table">
+  <include file="fr3_hand.xml"/>
+
+  <visual>
+    <headlight diffuse="0.55 0.55 0.55" ambient="0.35 0.35 0.35" specular="0 0 0"/>
+    <quality shadowsize="4096"/>
+    <global offwidth="1920" offheight="1080"/>
+  </visual>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.86 0.90 0.95" rgb2="0.45 0.52 0.62" width="512" height="3072"/>
+    <texture type="2d" name="floor" builtin="checker" mark="edge" rgb1="0.78 0.80 0.83" rgb2="0.72 0.74 0.77"
+      markrgb="0.6 0.62 0.65" width="300" height="300"/>
+    <material name="floor" texture="floor" texuniform="true" texrepeat="4 4" reflectance="0.05"/>
+    <material name="tabletop" rgba="0.80 0.86 0.94 1"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0.5 -0.6 2.2" dir="-0.2 0.3 -1" directional="true" castshadow="true"/>
+    <geom name="floor" size="0 0 0.05" type="plane" material="floor" contype="1" conaffinity="1"/>
+    <body name="table" pos="0.75 0 0">
+      <geom type="box" pos="0 0 0.36" size="0.35 0.45 0.02" material="tabletop" contype="1" conaffinity="1"/>
+      <geom type="box" pos="-0.3 -0.4 0.17" size="0.02 0.02 0.17" material="tabletop"/>
+      <geom type="box" pos="0.3 -0.4 0.17" size="0.02 0.02 0.17" material="tabletop"/>
+      <geom type="box" pos="-0.3 0.4 0.17" size="0.02 0.02 0.17" material="tabletop"/>
+      <geom type="box" pos="0.3 0.4 0.17" size="0.02 0.02 0.17" material="tabletop"/>
+    </body>
+    <body name="cup" pos="0.85 0.15 0.43">
+      <freejoint/>
+      <geom type="cylinder" size="0.04 0.05" rgba="0.95 0.95 0.98 1" mass="0.2" contype="1" conaffinity="1"/>
+    </body>
+    <body name="sponge" pos="0.7 -0.15 0.40">
+      <freejoint/>
+      <geom type="box" size="0.05 0.03 0.02" rgba="0.95 0.85 0.4 1" mass="0.05" contype="1" conaffinity="1"/>
+    </body>
+  </worldbody>
+</mujoco>

@@ -1,8 +1,8 @@
 # FMR robot learning labs
 
-Hands-on labs for the **[Foundation Models for Robotics](https://www.youtube.com/@FoundationModelsForRobotics)** video series and the free book **[Action Models for Robot Learning](https://action-models-book.vercel.app)**. One lab per lesson, all built around **FMR-6**, the same six-axis arm you see in the videos, simulated in [MuJoCo](https://github.com/google-deepmind/mujoco).
+Hands-on labs for the **[Foundation Models for Robotics](https://www.youtube.com/@FoundationModelsForRobotics)** video series and the free book **[Action Models for Robot Learning](https://action-models-book.vercel.app)**. One lab per lesson, simulated in [MuJoCo](https://github.com/google-deepmind/mujoco), with two arms to choose from: a **Franka FR3** (a real research arm) and **FMR-6** (the six-axis arm drawn in the videos).
 
-![FMR-6 in front of the table scene](docs/fmr6.png)
+![Franka FR3 at the table scene](docs/fr3.png)
 
 ## Run a lab
 
@@ -33,7 +33,7 @@ Videos in the notebooks use ffmpeg if it's installed (Colab has it); without it 
 
 **Tiers.** 1: MuJoCo + NumPy, laptop CPU or free Colab. 2: adds [LeRobot](https://github.com/huggingface/lerobot) (`pip install -e ".[learning]"`, installs PyTorch); VLA labs need a GPU. 3 (optional, later seasons): GPU-parallel simulators such as ManiSkill3.
 
-## FMR-6
+## The arms
 
 ```python
 import fmr6
@@ -41,8 +41,13 @@ robot = fmr6.Robot("table")                         # or fmr6.Robot() for the ar
 pos, R = robot.tcp()                                 # tool tip (m) and orientation; tool axis = R[:, 0]
 q = robot.ik([0.70, 0.05, 0.42], tool_dir=(0, 0, -1))
 image = robot.render()
+
+fr3 = fmr6.Robot("table", arm="fr3")                 # Franka FR3 + Franka Hand, same table; tool axis = R[:, 2]
 ```
 
+**Franka FR3** (7 joints, Franka Hand gripper): the MuJoCo model from [MuJoCo Menagerie](https://github.com/google-deepmind/mujoco_menagerie), with the hand from Menagerie's Panda attached at the flange and a `tcp` site at Franka's tool centre point. [`tools/build_fr3.py`](tools/build_fr3.py) rebuilds it from a Menagerie checkout. Starts in Franka's home pose, hand pointing down.
+
+**FMR-6:**
 Six joints (J1 base yaw, J2 shoulder, J3 elbow, J4–J6 a spherical wrist that meets at one point) and a parallel gripper. Dimensions match the drawings in the videos: shoulder at 0.33 m, upper arm 0.58 m, forearm 0.56 m, wrist-to-fingertip 0.262 m. The model is in [`fmr6/assets/fmr6.xml`](fmr6/assets/fmr6.xml), and everything in `fmr6/robot.py` is short enough to read in one sitting.
 
 ## Contributing
@@ -51,4 +56,4 @@ Found a bug or a confusing step? Open an issue with the lab name. Every push run
 
 ## License
 
-Code: MIT. FMR-6 model (`fmr6/assets/`): CC BY 4.0, "FMR-6 by Foundation Models for Robotics".
+Code: MIT. FMR-6 model (`fmr6/assets/*.xml`): CC BY 4.0, "FMR-6 by Foundation Models for Robotics". Franka FR3 and Franka Hand model and meshes (`fmr6/assets/fr3/`): Apache-2.0, from MuJoCo Menagerie, derived from Franka Robotics' `franka_description` ([licence](fmr6/assets/fr3/LICENSE)). Franka, FR3 and Franka Hand are trademarks of Franka Robotics GmbH; this project isn't affiliated with them.
