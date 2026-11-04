@@ -18,7 +18,7 @@ pytest -q                        # checks the model and the numbers used in the 
 jupyter lab labs/s0e1-drift/s0e1_drift.ipynb
 ```
 
-On a headless Linux machine set `MUJOCO_GL=egl` (NVIDIA) or `MUJOCO_GL=osmesa` (CPU) before rendering.
+Videos in the notebooks use ffmpeg if it's installed (Colab has it); without it you get still frames instead. On a headless Linux machine set `MUJOCO_GL=egl` (NVIDIA) or `MUJOCO_GL=osmesa` (CPU) before rendering.
 
 ## Labs
 
