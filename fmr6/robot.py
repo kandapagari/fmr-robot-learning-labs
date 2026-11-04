@@ -32,11 +32,12 @@ def model_path(scene: str = "arm", arm: str = "fmr6") -> Path:
 
 
 class Robot:
-    def __init__(self, scene: str = "arm", arm: str = "fmr6"):
-        """arm: "fmr6" (6 joints, the arm from the videos) or "fr3" (Franka FR3, 7 joints)."""
+    def __init__(self, scene: str = "arm", arm: str = "fmr6", model: mujoco.MjModel | None = None):
+        """arm: "fmr6" (6 joints, the arm from the videos) or "fr3" (Franka FR3, 7 joints).
+        model: a model you compiled yourself (e.g. the scene edited with mujoco.MjSpec); scene is then ignored."""
         cfg = ARMS[arm]
         self.arm, self.joints, self.ready, self.tool_axis = arm, cfg["joints"], cfg["ready"], cfg["tool_axis"]
-        self.model = mujoco.MjModel.from_xml_path(str(model_path(scene, arm)))
+        self.model = model if model is not None else mujoco.MjModel.from_xml_path(str(model_path(scene, arm)))
         self.data = mujoco.MjData(self.model)
         ids = [self.model.joint(j).id for j in self.joints]
         self.qadr = np.array([self.model.joint(j).qposadr[0] for j in self.joints])
@@ -56,6 +57,7 @@ class Robot:
         self.data.qpos[self.qadr] = q
         mujoco.mj_kinematics(self.model, self.data)
         mujoco.mj_comPos(self.model, self.data)
+        mujoco.mj_camlight(self.model, self.data)            # lights and cameras follow the bodies too
 
     def tcp(self, q=None):
         """Tool centre point: (position in metres, 3×3 rotation matrix). The tool axis is column `self.tool_axis`
@@ -66,17 +68,23 @@ class Robot:
 
     # ——— inverse kinematics ———
     def ik(self, target_pos, tool_dir=(0.0, 0.0, -1.0), q0=None, iters: int = 200, damping: float = 1e-3,
-           w_dir: float = 0.3, tol: float = 1e-5):
+           w_dir: float = 0.3, tol: float = 1e-5, grip_dir=None):
         """Damped least squares: move the tool tip to target_pos with the tool axis along tool_dir.
         Returns joint angles (radians). Starts from q0 (default: current pose).
-        With 7 joints (FR3) there are many solutions; starting near the ready pose keeps the elbow sensible."""
+        With 7 joints (FR3) there are many solutions; starting near the ready pose keeps the elbow sensible.
+        grip_dir: optional direction the fingers should close along (the TCP's y axis), e.g. across a narrow object.
+        Without it the hand may end up at any rotation about the tool axis."""
         q = self.q() if q0 is None else np.array(q0, dtype=float)
         tool_dir = np.asarray(tool_dir, float) / np.linalg.norm(tool_dir)
+        if grip_dir is not None:
+            grip_dir = np.asarray(grip_dir, float) / np.linalg.norm(grip_dir)
         jp, jr = np.zeros((3, self.model.nv)), np.zeros((3, self.model.nv))
         for _ in range(iters):
             pos, R = self.tcp(q)
             e_pos = np.asarray(target_pos) - pos
             e_dir = np.cross(R[:, self.tool_axis], tool_dir)                  # rotation that turns the tool axis onto tool_dir
+            if grip_dir is not None:                                          # and the finger axis onto grip_dir
+                e_dir = e_dir + np.cross(R[:, 1], grip_dir)
             err = np.concatenate([e_pos, w_dir * e_dir])
             if np.linalg.norm(err) < tol:
                 break

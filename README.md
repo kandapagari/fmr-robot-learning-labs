@@ -6,6 +6,8 @@ Hands-on labs for the **[Foundation Models for Robotics](https://www.youtube.com
 
 ## Run a lab
 
+**New here?** Start with the [Lab Kit](labs/lab-kit): three short labs that teach the simulator.
+
 **In the browser (no install):** open the lab's Colab link below and run the cells top to bottom.
 
 **On your machine** (Python 3.10+, no GPU needed for Tier 1):
@@ -24,6 +26,7 @@ Videos in the notebooks use ffmpeg if it's installed (Colab has it); without it 
 
 | Lesson | Lab | Tier | Status |
 |---|---|---|---|
+| Lab Kit L1–L3 (bonus videos) | [Learn the simulator](labs/lab-kit): first sim, driving the arm, physics and your own scenes · [L1 Colab](https://colab.research.google.com/github/kandapagari/fmr-robot-learning-labs/blob/main/labs/lab-kit/l1_first_sim.ipynb) | 1 | ready |
 | S0E1 · [Why a Robot Isn't a Chatbot With Arms](https://youtu.be/bN-Yv_gUcMM) | [Small errors don't stay small](labs/s0e1-drift) · [Colab](https://colab.research.google.com/github/kandapagari/fmr-robot-learning-labs/blob/main/labs/s0e1-drift/s0e1_drift.ipynb) | 1 | ready |
 | S0E2 · The four families of action models | coming with the lesson | 1 | planned |
 | A1–A5 · Frames, rotations, kinematics, IK, control | FMR-6 transforms, gimbal lock, Jacobian, IK, PID | 1 | planned |

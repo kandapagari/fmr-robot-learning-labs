@@ -5,3 +5,7 @@ __pycache__/
 *.mp4
 *.png
 !docs/*.png
+
+# files the labs write
+labs/**/*.mp4
+labs/**/*.npz
