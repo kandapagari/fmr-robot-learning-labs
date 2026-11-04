@@ -1,0 +1,99 @@
+<!--
+  FMR-6: the house robot of the "Foundation Models for Robotics" series.
+  A generic six-axis arm with a spherical wrist and a parallel two-finger gripper,
+  built to the same dimensions as the arm drawn in the videos (1 drawing unit = 1 mm).
+  Zero pose: upper arm vertical, forearm horizontal along +x, tool along +x.
+  Joints: J1 base yaw (z) · J2 shoulder pitch (y) · J3 elbow pitch (y) ·
+          J4 forearm roll (x) · J5 wrist pitch (y) · J6 flange roll (x).
+  J4, J5 and J6 meet at one point (the wrist centre), so the wrist is a physical X-Y-X Euler set.
+  License: CC BY 4.0, Foundation Models for Robotics.
+-->
+<mujoco model="fmr6">
+  <compiler angle="degree" autolimits="true"/>
+  <option timestep="0.002" integrator="implicitfast"/>
+  <visual>
+    <headlight ambient="0.35 0.35 0.38" diffuse="0.55 0.55 0.55" specular="0.1 0.1 0.1"/>
+    <global offwidth="1280" offheight="960"/>
+  </visual>
+
+  <default>
+    <joint damping="2" armature="0.05"/>
+    <geom contype="0" conaffinity="0" rgba="0.86 0.91 0.97 1"/>
+    <position kp="400" kv="40" forcerange="-200 200"/>
+    <default class="finger">
+      <geom contype="1" conaffinity="1" friction="1.2 0.02 0.001" rgba="0.75 0.82 0.92 1"/>
+    </default>
+  </default>
+
+  <asset>
+    <texture name="sky" type="skybox" builtin="gradient" rgb1="0.16 0.34 0.65" rgb2="0.05 0.08 0.14" width="256" height="256"/>
+    <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1="0.09 0.20 0.42" rgb2="0.13 0.27 0.53"/>
+    <material name="floor" texture="grid" texrepeat="8 8" reflectance="0.05"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0.6 -1 2.5" dir="-0.2 0.4 -1" diffuse="0.9 0.9 0.9"/>
+    <geom name="floor" type="plane" size="3 3 0.05" material="floor" contype="1" conaffinity="1"/>
+
+    <body name="base" pos="0 0 0">
+      <geom name="base_plate" type="cylinder" size="0.20 0.045" pos="0 0 0.045"/>
+      <body name="link1">
+        <joint name="j1" axis="0 0 1" range="-180 180"/>
+        <inertial pos="0 0 0.2" mass="6" diaginertia="0.05 0.05 0.03"/>
+        <geom name="turret" type="cylinder" fromto="0 0 0.09 0 0 0.30" size="0.11"/>
+        <body name="link2" pos="0 0 0.33">
+          <joint name="j2" axis="0 1 0" range="-150 150"/>
+          <inertial pos="0 0 0.29" mass="5" diaginertia="0.15 0.15 0.01"/>
+          <geom name="shoulder_hub" type="cylinder" fromto="0 -0.1 0 0 0.1 0" size="0.098"/>
+          <geom name="upper_arm" type="capsule" fromto="0 0 0 0 0 0.58" size="0.08"/>
+          <body name="link3" pos="0 0 0.58">
+            <joint name="j3" axis="0 1 0" range="-160 160"/>
+            <inertial pos="0.25 0 0" mass="3" diaginertia="0.005 0.08 0.08"/>
+            <geom name="elbow_hub" type="cylinder" fromto="0 -0.085 0 0 0.085 0" size="0.082"/>
+            <geom name="forearm" type="capsule" fromto="0 0 0 0.49 0 0" size="0.062"/>
+            <body name="link4" pos="0.56 0 0">
+              <joint name="j4" axis="1 0 0" range="-270 270"/>
+              <inertial pos="-0.03 0 0" mass="0.8" diaginertia="0.002 0.002 0.002"/>
+              <geom name="roll_housing" type="cylinder" fromto="-0.088 0 0 -0.02 0 0" size="0.07"/>
+              <body name="link5">
+                <joint name="j5" axis="0 1 0" range="-120 120"/>
+                <inertial pos="0 0 0" mass="0.5" diaginertia="0.001 0.001 0.001"/>
+                <geom name="wrist_hub" type="cylinder" fromto="0 -0.054 0 0 0.054 0" size="0.054"/>
+                <body name="link6">
+                  <joint name="j6" axis="1 0 0" range="-270 270"/>
+                  <inertial pos="0.12 0 0" mass="0.6" diaginertia="0.001 0.002 0.002"/>
+                  <geom name="flange" type="cylinder" fromto="0.03 0 0 0.118 0 0" size="0.044"/>
+                  <geom name="palm" type="box" pos="0.139 0 0" size="0.021 0.066 0.028"/>
+                  <site name="tcp" pos="0.262 0 0" size="0.008" rgba="0.9 0.2 0.2 1"/>
+                  <body name="finger_left" pos="0.16 0 0">
+                    <joint name="finger_left" type="slide" axis="0 1 0" range="0 0.03" damping="5"/>
+                    <geom class="finger" type="box" pos="0.051 0.034 0" size="0.051 0.009 0.016"/>
+                  </body>
+                  <body name="finger_right" pos="0.16 0 0">
+                    <joint name="finger_right" type="slide" axis="0 -1 0" range="0 0.03" damping="5"/>
+                    <geom class="finger" type="box" pos="0.051 -0.034 0" size="0.051 0.009 0.016"/>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <equality>
+    <joint joint1="finger_left" joint2="finger_right" polycoef="0 1 0 0 0"/>
+  </equality>
+
+  <!-- position targets are in radians (MuJoCo stores joint angles in radians even with angle="degree") -->
+  <actuator>
+    <position name="a1" joint="j1" ctrlrange="-3.1416 3.1416"/>
+    <position name="a2" joint="j2" ctrlrange="-2.618 2.618"/>
+    <position name="a3" joint="j3" ctrlrange="-2.793 2.793"/>
+    <position name="a4" joint="j4" ctrlrange="-4.712 4.712" kp="120" kv="12"/>
+    <position name="a5" joint="j5" ctrlrange="-2.094 2.094" kp="120" kv="12"/>
+    <position name="a6" joint="j6" ctrlrange="-4.712 4.712" kp="80" kv="8"/>
+    <position name="gripper" joint="finger_left" ctrlrange="0 0.03" kp="300" kv="20"/>
+  </actuator>
+</mujoco>

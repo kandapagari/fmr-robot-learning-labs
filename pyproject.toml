@@ -1,0 +1,31 @@
+[project]
+name = "fmr-robot-learning-labs"
+version = "0.1.0"
+description = "Hands-on labs for the Foundation Models for Robotics video series: the FMR-6 arm in MuJoCo, one lab per lesson."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT (code), CC BY 4.0 (FMR-6 model)" }
+dependencies = [
+  "mujoco>=3.2",
+  "numpy>=1.26",
+  "matplotlib>=3.8",
+  "mediapy>=1.2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "nbclient>=0.10", "nbformat>=5.10", "ipykernel>=6.29"]
+# Tier 2 labs (imitation learning, VLAs). Heavy: installs PyTorch. Only needed from Season 2 on.
+learning = ["lerobot"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["fmr6"]
+
+[tool.setuptools.package-data]
+fmr6 = ["assets/*.xml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

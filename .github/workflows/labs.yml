@@ -1,0 +1,23 @@
+name: labs
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      MUJOCO_GL: osmesa
+      PYOPENGL_PLATFORM: osmesa
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: System libraries for headless rendering
+        run: sudo apt-get update && sudo apt-get install -y libosmesa6-dev
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Unit tests (model, kinematics, the numbers shown in the videos)
+        run: pytest -q
+      - name: Run every lab notebook headless
+        run: python tools/run_notebooks.py

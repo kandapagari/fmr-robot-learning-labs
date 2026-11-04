@@ -1,0 +1,21 @@
+<!-- FMR-6 in front of a table with a cup and a sponge: the S0E1 "clean up the spill" scene. -->
+<mujoco model="fmr6_table">
+  <include file="fmr6.xml"/>
+  <worldbody>
+    <body name="table" pos="0.75 0 0">
+      <geom type="box" pos="0 0 0.36" size="0.35 0.45 0.02" rgba="0.80 0.86 0.94 1" contype="1" conaffinity="1"/>
+      <geom type="box" pos="-0.3 -0.4 0.17" size="0.02 0.02 0.17" rgba="0.80 0.86 0.94 1"/>
+      <geom type="box" pos="0.3 -0.4 0.17" size="0.02 0.02 0.17" rgba="0.80 0.86 0.94 1"/>
+      <geom type="box" pos="-0.3 0.4 0.17" size="0.02 0.02 0.17" rgba="0.80 0.86 0.94 1"/>
+      <geom type="box" pos="0.3 0.4 0.17" size="0.02 0.02 0.17" rgba="0.80 0.86 0.94 1"/>
+    </body>
+    <body name="cup" pos="0.85 0.15 0.43">
+      <freejoint/>
+      <geom type="cylinder" size="0.04 0.05" rgba="0.95 0.95 0.98 1" mass="0.2" contype="1" conaffinity="1"/>
+    </body>
+    <body name="sponge" pos="0.7 -0.15 0.40">
+      <freejoint/>
+      <geom type="box" size="0.05 0.03 0.02" rgba="0.95 0.85 0.4 1" mass="0.05" contype="1" conaffinity="1"/>
+    </body>
+  </worldbody>
+</mujoco>
