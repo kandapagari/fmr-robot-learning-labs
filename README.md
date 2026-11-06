@@ -28,7 +28,8 @@ Videos in the notebooks use ffmpeg if it's installed (Colab has it); without it 
 |---|---|---|---|
 | Lab Kit L1–L3 (bonus videos) | [Learn the simulator](labs/lab-kit): first sim, driving the arm, physics and your own scenes · [L1 Colab](https://colab.research.google.com/github/kandapagari/fmr-robot-learning-labs/blob/main/labs/lab-kit/l1_first_sim.ipynb) | 1 | ready |
 | S0E1 · [Why a Robot Isn't a Chatbot With Arms](https://youtu.be/bN-Yv_gUcMM) | [Small errors don't stay small](labs/s0e1-drift) · [Colab](https://colab.research.google.com/github/kandapagari/fmr-robot-learning-labs/blob/main/labs/s0e1-drift/s0e1_drift.ipynb) | 1 | ready |
-| S0E2 · The four families of action models | coming with the lesson | 1 | planned |
+| S0E2 · The four families of action models | [One reach, two families](labs/s0e2-two-families) · [Colab](https://colab.research.google.com/github/kandapagari/fmr-robot-learning-labs/blob/main/labs/s0e2-two-families/s0e2_two_families.ipynb) | 1 | ready |
+| S0E3 · Your first VLA, end to end | [Action tokens, by hand](labs/s0e3-action-tokens) · [Colab](https://colab.research.google.com/github/kandapagari/fmr-robot-learning-labs/blob/main/labs/s0e3-action-tokens/s0e3_action_tokens.ipynb) | 1 | ready |
 | A1–A5 · Frames, rotations, kinematics, IK, control | FMR-6 transforms, gimbal lock, Jacobian, IK, PID | 1 | planned |
 | A8 · Teleop | Record 50 demos in sim, save in LeRobot format | 1–2 | planned |
 | C3–C7 · Behaviour cloning to Diffusion Policy | BC, DAgger, ACT, Diffusion Policy on your demos and Push-T | 2 | planned |
